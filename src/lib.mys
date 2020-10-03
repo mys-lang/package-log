@@ -31,23 +31,23 @@ class Logger:
 
         return level >= self._level
 
-    @inline
+    @macro
     def error(self, message: string):
         self._log(message, ERROR, "ERROR")
 
-    @inline
+    @macro
     def warning(self, message: string):
         self._log(message, WARNING, "WARNING")
 
-    @inline
+    @macro
     def info(self, message: string):
         self._log(message, INFO, "INFO")
 
-    @inline
+    @macro
     def debug(self, message: string):
         self._log(message, DEBUG, "DEBUG")
 
-    @inline
+    @macro
     def _log(self, message: string, level: u8, level_string: string):
         if self.is_enabled_for(level):
             print(f"{self._name} {level_string}", message)

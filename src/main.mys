@@ -1,0 +1,12 @@
+from . import Logger
+
+def main(args: [String]):
+    if args.length() != 2:
+        raise Exception(f"Usage: {args[0]} <message>")
+
+    logger = Logger("log-main")
+
+    logger.error(args[1])
+    logger.warning(args[1])
+    logger.info(args[1])
+    logger.debug(args[1])

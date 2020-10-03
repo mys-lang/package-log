@@ -1,5 +1,5 @@
 # Levels.
-OFF: u8 = 50
+OFF: u8 = 255
 ERROR: u8 = 40
 WARNING: u8 = 30
 INFO: u8 = 20
@@ -29,24 +29,25 @@ class Logger:
 
         """
 
-        return self._level <= level
+        return level >= self._level
 
     @inline
     def error(self, message: String):
-        if self._level <= ERROR:
-            print(f"{self._name} ERROR", message)
+        self._log(message, ERROR, "ERROR")
 
     @inline
     def warning(self, message: String):
-        if self._level <= WARNING:
-            print(f"{self._name} WARNING", message)
+        self._log(message, WARNING, "WARNING")
 
     @inline
     def info(self, message: String):
-        if self._level <= INFO:
-            print(f"{self._name} INFO", message)
+        self._log(message, INFO, "INFO")
 
     @inline
     def debug(self, message: String):
-        if self._level <= DEBUG:
-            print(f"{self._name} DEBUG", message)
+        self._log(message, DEBUG, "DEBUG")
+
+    @inline
+    def _log(self, message: String, level: u8, level_string: String):
+        if self.is_enabled_for(level):
+            print(f"{self._name} {level_string}", message)

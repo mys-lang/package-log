@@ -10,10 +10,10 @@ class Logger:
 
     """
 
-    _name: String
+    _name: string
     _level: u8
 
-    def __init__(self, name: String, level: u8 = INFO):
+    def __init__(self, name: string, level: u8 = INFO):
         self._name = name
         self._level = level
 
@@ -32,22 +32,22 @@ class Logger:
         return level >= self._level
 
     @inline
-    def error(self, message: String):
+    def error(self, message: string):
         self._log(message, ERROR, "ERROR")
 
     @inline
-    def warning(self, message: String):
+    def warning(self, message: string):
         self._log(message, WARNING, "WARNING")
 
     @inline
-    def info(self, message: String):
+    def info(self, message: string):
         self._log(message, INFO, "INFO")
 
     @inline
-    def debug(self, message: String):
+    def debug(self, message: string):
         self._log(message, DEBUG, "DEBUG")
 
     @inline
-    def _log(self, message: String, level: u8, level_string: String):
+    def _log(self, message: string, level: u8, level_string: string):
         if self.is_enabled_for(level):
             print(f"{self._name} {level_string}", message)

@@ -1,6 +1,6 @@
 from . import Logger
 
-def main(args: [String]):
+def main(args: [string]):
     if args.length() != 2:
         raise Exception(f"Usage: {args[0]} <message>")
 

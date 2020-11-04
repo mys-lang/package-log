@@ -51,3 +51,11 @@ class Logger:
     def _log(self, message: string, level: u8, level_string: string):
         if self.is_enabled_for(level):
             print(f"{self._name} {level_string}", message)
+
+@macro
+def file_line(self):
+    """Log current file path and line number.
+
+    """
+
+    print(f"{__file__}:{__line__}:")

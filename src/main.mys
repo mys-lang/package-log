@@ -6,7 +6,7 @@ def main(args: [string]):
 
     logger = Logger("log-main")
 
-    logger.error(args[1])
-    logger.warning(args[1])
-    logger.info(args[1])
-    logger.debug(args[1])
+    logger.error("Message: {}", args[1])
+    logger.warning("Message: {}", args[1])
+    logger.info("Message: {}", args[1])
+    logger.debug("Message: {}", args[1])

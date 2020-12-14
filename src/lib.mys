@@ -1,9 +1,17 @@
-# Levels.
-OFF: u8 = 255
-ERROR: u8 = 40
-WARNING: u8 = 30
-INFO: u8 = 20
-DEBUG: u8 = 10
+@enum(u8)
+class Level:
+    Off = 255
+    Error = 40
+    Warning = 30
+    Info = 20
+    Debug = 10
+
+@enum
+class _State:
+
+    Start
+    OpenBrace
+    CloseBrace
 
 class Logger:
     """A logger.
@@ -11,51 +19,94 @@ class Logger:
     """
 
     _name: string
-    _level: u8
+    _level: Level
 
-    def __init__(self, name: string, level: u8 = INFO):
+    def __init__(self, name: string, level: Level = Level.Info):
         self._name = name
         self._level = level
 
-    def set_level(self, level: u8):
+    def set_level(self, level: Level):
         """Set the logging level.
 
         """
 
         self._level = level
 
-    def is_enabled_for(self, level: u8) -> bool:
+    def is_enabled_for(self, level: Level) -> bool:
         """Returns True is given level is enabled, otherwise False.
 
         """
 
         return level >= self._level
 
-    @macro
-    def error(self, message: string):
-        self._log(message, ERROR, "ERROR")
+    def error(self, format_string: comptime[string], *args):
+        self._log(format_string, Level.Error, "ERROR", args)
 
-    @macro
     def warning(self, message: string):
-        self._log(message, WARNING, "WARNING")
+        self._log(format_string, Level.Warning, "WARNING", args)
 
-    @macro
     def info(self, message: string):
-        self._log(message, INFO, "INFO")
+        self._log(format_string, Level.Info, "INFO", args)
 
-    @macro
     def debug(self, message: string):
-        self._log(message, DEBUG, "DEBUG")
+        self._log(format_string, Level.Debug, "DEBUG", args)
 
-    @macro
-    def _log(self, message: string, level: u8, level_string: string):
-        if self.is_enabled_for(level):
-            print(f"{self._name} {level_string}", message)
+    def _log(self,
+             format_string: comptime[string],
+             level: Level,
+             level_string: string,
+             *args):
+        if not self.is_enabled_for(level):
+            return
 
-@macro
-def file_line():
-    """Log current file path and line number.
+        start_index: comptime = 0
+        state: comptime = _State.Start
+        next_arg: comptime = 0
 
-    """
+        print(f"{self._name} {level_string}", end="")
 
-    print(f"{__file__}:{__line__}:")
+        for i, ch in enumerate(format_string):
+            match state:
+                case _State.Start:
+                    match ch:
+                        case '{':
+                            if start_index < i:
+                                print(format_string[start_index:i], end="")
+
+                            state = _State.OpenBrace
+
+                        case '}':
+                            if start_index < i:
+                                print(format_string[start_index:i], end="")
+
+                            state = _State.CloseBrace
+
+                case _State.OpenBrace:
+                    match ch:
+                        case '{':
+                            state = _State.Start
+                            start_index = i
+
+                        case '}':
+                            print(args[next_arg], end="")
+                            next_arg += 1
+                            state = _State.Start
+                            start_index = i + 1
+
+                case _State.CloseBrace:
+                    match ch:
+                        case '}':
+                            state = _State.Start
+                            start_index = i
+
+                        case _:
+                            raise ComptimeError("single '}' encountered in format string")
+
+        if len(args) != next_arg:
+            raise ComptimeError("unused arguments")
+
+        if state != _State.Start:
+            raise ComptimeError(f"incomplete format string: {format_string}")
+
+        if start_index < len(format_string):
+            print(format_string[start_index:])

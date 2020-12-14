@@ -14,7 +14,7 @@ Examples
 
    def main():
        logger = Logger("log-main")
-       logger.info(f"1 + 1 = {1 + 1}")
+       logger.info("1 + 1 = {}", 1 + 1)
 
 .. |buildstatus| image:: https://travis-ci.com/eerimoq/mys-log.svg?branch=master
 .. _buildstatus: https://travis-ci.com/eerimoq/mys-log

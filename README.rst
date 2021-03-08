@@ -1,5 +1,3 @@
-|buildstatus|_
-
 Log
 ===
 
@@ -16,7 +14,4 @@ Examples
        logger = Logger("log-main")
        logger.info(f"1 + 1 = {1 + 1}")
 
-.. |buildstatus| image:: https://travis-ci.com/eerimoq/mys-log.svg?branch=master
-.. _buildstatus: https://travis-ci.com/eerimoq/mys-log
-
-.. _Mys programming language: https://github.com/eerimoq/mys
+.. _Mys programming language: https://github.com/mys-lang/mys

@@ -1,17 +1,10 @@
 @enum(u8)
 class Level:
-    Off = 255
-    Error = 40
-    Warning = 30
-    Info = 20
     Debug = 10
-
-@enum
-class _State:
-
-    Start
-    OpenBrace
-    CloseBrace
+    Info = 20
+    Warning = 30
+    Error = 40
+    Off = 255
 
 class Logger:
     """A logger.
@@ -39,74 +32,29 @@ class Logger:
 
         return level >= self._level
 
-    def error(self, format_string: comptime[string], *args):
-        self._log(format_string, Level.Error, "ERROR", args)
+    def error(self, message: string):
+        self._log(message, Level.Error, "ERROR")
 
-    def warning(self, format_string: comptime[string], *args):
-        self._log(format_string, Level.Warning, "WARNING", args)
+    def warning(self, message: string):
+        self._log(message, Level.Warning, "WARNING")
 
-    def info(self, format_string: comptime[string], *args):
-        self._log(format_string, Level.Info, "INFO", args)
+    def info(self, message: string):
+        self._log(message, Level.Info, "INFO")
 
-    def debug(self, format_string: comptime[string], *args):
-        self._log(format_string, Level.Debug, "DEBUG", args)
+    def debug(self, message: string):
+        self._log(message, Level.Debug, "DEBUG")
 
-    def _log(self,
-             format_string: comptime[string],
-             level: Level,
-             level_string: string,
-             *args):
+    def _log(self, message: string, level: Level, level_string: string):
         if not self.is_enabled_for(level):
             return
 
-        start_index: comptime = 0
-        state: comptime = _State.Start
-        next_arg: comptime = 0
+        print(f"{self._name} {level_string} {message}")
 
-        print(f"{self._name} {level_string}", end="")
+@test
+def test_print():
+    logger = Logger("my-logger")
 
-        for i, ch in enumerate(format_string):
-            match state:
-                case _State.Start:
-                    match ch:
-                        case '{':
-                            if start_index < i:
-                                print(format_string[start_index:i], end="")
-
-                            state = _State.OpenBrace
-
-                        case '}':
-                            if start_index < i:
-                                print(format_string[start_index:i], end="")
-
-                            state = _State.CloseBrace
-
-                case _State.OpenBrace:
-                    match ch:
-                        case '{':
-                            state = _State.Start
-                            start_index = i
-
-                        case '}':
-                            print(args[next_arg], end="")
-                            next_arg += 1
-                            state = _State.Start
-                            start_index = i + 1
-
-                case _State.CloseBrace:
-                    match ch:
-                        case '}':
-                            state = _State.Start
-                            start_index = i
-
-                        case _:
-                            raise ComptimeError("single '}' encountered in format string")
-
-        if len(args) != next_arg:
-            raise ComptimeError("unused arguments")
-
-        if state != _State.Start:
-            raise ComptimeError(f"incomplete format string: {format_string}")
-
-        if start_index < len(format_string):
-            print(format_string[start_index:])
+    logger.error(f"Message: {1 + 1}")
+    logger.warning(f"Message: {2 + 2}")
+    logger.info(f"Message: {3 + 3}")
+    logger.debug(f"Message: {4 + 4}")

@@ -14,4 +14,4 @@ Examples
        logger = Logger("log-main")
        logger.info(f"1 + 1 = {1 + 1}")
 
-.. _Mys programming language: https://github.com/mys-lang/mys
+.. _Mys programming language: https://mys-lang.org

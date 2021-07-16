@@ -1,0 +1,5 @@
+from log import Logger
+
+def main():
+    logger = Logger("my-logger")
+    logger.info(f"1 + 1 = {1 + 1}")

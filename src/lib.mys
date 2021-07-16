@@ -1,95 +1,133 @@
 @enum(u8)
 class Level:
-    Debug = 10
-    Info = 20
-    Warning = 30
-    Error = 40
-    Off = 255
-
-@trait
-class Handler:
-    """Log entry output handler.
+    """Logging levels.
 
     """
 
-    def log(self, message: string):
-        pass
+    Debug = 0
+    Info = 1
+    Warning = 2
+    Error = 3
+
+# Use Enum values later?
+_LEVEL_STRINGS: [string] = [
+    "DEBUG",
+    "INFO",
+    "WARNING",
+    "ERROR"
+]
+
+@trait
+class Handler:
+    """Log entry output handler trait.
+
+    """
+
+    def write(self, message: string):
+        """Write given message to desired location.
+
+        """
 
 class StdoutHandler(Handler):
     """Writes log messages to standard output.
 
     """
 
-    def log(self, message: string):
+    def write(self, message: string):
+        """Writes given log message to standard output.
+
+        """
+
         print(message)
+
+@trait
+class Formatter:
+    """Log entry formatter trait.
+
+    """
+
+    def format(self, logger_name: string, level: Level, message: string) -> string:
+        """Returns a formatted log message.
+
+        """
+
+class DefaultFormatter(Formatter):
+    """Default log entry formatter.
+
+    """
+
+    def format(self, logger_name: string, level: Level, message: string) -> string:
+        """Formats a log message on the format <logger name> <level> <message>
+        and returns it.
+
+        """
+
+        return f"{logger_name} {_LEVEL_STRINGS[u8(level)]} {message}"
+
+DEFAULT_HANDLER: Handler = StdoutHandler()
+# ToDo: Docstring.
+
+DEFAULT_FORMATTER: Formatter = DefaultFormatter()
+# ToDo: Docstring.
 
 class Logger:
     """A logger.
 
-    Writes log messages to standard ouput by default.
-
     """
 
     _name: string
-    _level: Level
+    level: Level
     _handler: Handler
+    _formatter: Formatter
 
     def __init__(self,
                  name: string,
-                 # ToDo: Should be Level.Info, but 'mys doc' fails
-                 level: Level = Level(20),
-                 handler: Handler = StdoutHandler()):
+                 level: Level = Level.Info,
+                 handler: Handler = DEFAULT_HANDLER,
+                 formatter: Formatter = DEFAULT_FORMATTER):
         self._name = name
-        self._level = level
+        self.level = level
         self._handler = handler
-
-    def set_level(self, level: Level):
-        """Set the logging level.
-
-        """
-
-        self._level = level
+        self._formatter = formatter
 
     def is_enabled_for(self, level: Level) -> bool:
         """Returns True is given level is enabled, otherwise False.
 
         """
 
-        return level >= self._level
+        return level >= self.level
 
     def error(self, message: string):
         """Log given error message.
 
         """
 
-        self._log(message, Level.Error, "ERROR")
+        self._log(message, Level.Error)
 
     def warning(self, message: string):
         """Log given warning message.
 
         """
 
-        self._log(message, Level.Warning, "WARNING")
+        self._log(message, Level.Warning)
 
     def info(self, message: string):
         """Log given info message.
 
         """
 
-        self._log(message, Level.Info, "INFO")
+        self._log(message, Level.Info)
 
     def debug(self, message: string):
         """Log given debug message.
 
         """
 
-        self._log(message, Level.Debug, "DEBUG")
+        self._log(message, Level.Debug)
 
-    def _log(self, message: string, level: Level, level_string: string):
-        if not self.is_enabled_for(level):
-            return
-
-        self._handler.log(f"{self._name} {level_string} {message}")
+    def _log(self, message: string, level: Level):
+        if self.is_enabled_for(level):
+            self._handler.write(self._formatter.format(self._name, level, message))
 
 @test
 def test_default_handler():
@@ -103,7 +141,7 @@ def test_default_handler():
 class _BufferHandler(Handler):
     entries: [string]
 
-    def log(self, message: string):
+    def write(self, message: string):
         self.entries.append(message)
 
 @test
@@ -117,3 +155,143 @@ def test_buffer_handler():
 
     assert handler.entries == ["my-logger INFO Message 1",
                                "my-logger INFO Message 3"]
+
+class _CounterFormatter(Formatter):
+    count: i64
+
+    def format(self, logger_name: string, level: Level, message: string) -> string:
+        self.count += 1
+
+        return f"{self.count}: {message}"
+
+@test
+def test_my_formatter():
+    handler = _BufferHandler([])
+    logger = Logger("my-logger", handler=handler, formatter=_CounterFormatter(0))
+
+    logger.info("Message a")
+    logger.warning("Message b")
+
+    assert handler.entries == ["1: Message a",
+                               "2: Message b"]
+
+@test
+def test_global_default_handler():
+    default_handler = DEFAULT_HANDLER
+    handler = _BufferHandler([])
+    DEFAULT_HANDLER = handler
+
+    logger = Logger("foo")
+    logger.info("Using our handler.")
+    DEFAULT_HANDLER = default_handler
+    logger.error("Still using our handler.")
+
+    assert handler.entries == ["foo INFO Using our handler.",
+                               "foo ERROR Still using our handler."]
+
+    logger = Logger("bar")
+    logger.info("Using the default handler again.")
+    logger.error("Using the default handler again.")
+
+    assert handler.entries == ["foo INFO Using our handler.",
+                               "foo ERROR Still using our handler."]
+
+@test
+def test_global_default_formatter():
+    handler = _BufferHandler([])
+
+    default_formatter = DEFAULT_FORMATTER
+    formatter = _CounterFormatter(0)
+    DEFAULT_FORMATTER = formatter
+
+    logger = Logger("foo", handler=handler)
+    logger.info("Using our formatter.")
+    DEFAULT_FORMATTER = default_formatter
+    logger.error("Still using our formatter.")
+
+    assert handler.entries == ["1: Using our formatter.",
+                               "2: Still using our formatter."]
+
+    logger = Logger("bar", handler=handler)
+    logger.info("Using the default formatter again.")
+    logger.error("Using the default formatter again.")
+
+    assert handler.entries == ["1: Using our formatter.",
+                               "2: Still using our formatter.",
+                               "bar INFO Using the default formatter again.",
+                               "bar ERROR Using the default formatter again."]
+
+@test
+def test_levels():
+    handler = _BufferHandler([])
+    logger = Logger("my-logger", handler=handler)
+
+    # Debug.
+    logger.level = Level.Debug
+    handler.entries = []
+
+    logger.debug("1")
+    logger.info("2")
+    logger.warning("3")
+    logger.error("4")
+
+    assert handler.entries == ["my-logger DEBUG 1",
+                               "my-logger INFO 2",
+                               "my-logger WARNING 3",
+                               "my-logger ERROR 4"]
+
+    assert logger.is_enabled_for(Level.Debug)
+    assert logger.is_enabled_for(Level.Info)
+    assert logger.is_enabled_for(Level.Warning)
+    assert logger.is_enabled_for(Level.Error)
+
+    # Info.
+    logger.level = Level.Info
+    handler.entries = []
+
+    logger.debug("5")
+    logger.info("6")
+    logger.warning("7")
+    logger.error("8")
+
+    assert handler.entries == ["my-logger INFO 6",
+                               "my-logger WARNING 7",
+                               "my-logger ERROR 8"]
+
+    assert not logger.is_enabled_for(Level.Debug)
+    assert logger.is_enabled_for(Level.Info)
+    assert logger.is_enabled_for(Level.Warning)
+    assert logger.is_enabled_for(Level.Error)
+
+    # Warning.
+    logger.level = Level.Warning
+    handler.entries = []
+
+    logger.debug("9")
+    logger.info("10")
+    logger.warning("11")
+    logger.error("12")
+
+    assert handler.entries == ["my-logger WARNING 11",
+                               "my-logger ERROR 12"]
+
+    assert not logger.is_enabled_for(Level.Debug)
+    assert not logger.is_enabled_for(Level.Info)
+    assert logger.is_enabled_for(Level.Warning)
+    assert logger.is_enabled_for(Level.Error)
+
+    # Error.
+    logger.level = Level.Error
+    handler.entries = []
+
+    logger.debug("13")
+    logger.info("14")
+    logger.warning("15")
+    logger.error("16")
+
+    assert handler.entries == ["my-logger ERROR 16"]
+
+    assert not logger.is_enabled_for(Level.Debug)
+    assert not logger.is_enabled_for(Level.Info)
+    assert not logger.is_enabled_for(Level.Warning)
+    assert logger.is_enabled_for(Level.Error)

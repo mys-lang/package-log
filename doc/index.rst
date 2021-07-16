@@ -7,16 +7,23 @@ Logging facilities in the `Mys programming language`_.
 
 Project: https://github.com/mys-lang/package-log
 
-Example
-=======
+An example
+==========
 
 .. code-block:: python
 
    from log import Logger
 
    def main():
-       logger = Logger("log-main")
+       logger = Logger("my-logger")
        logger.info(f"1 + 1 = {1 + 1}")
+
+The output:
+
+.. code-block:: text
+
+   $ mys run
+   my-logger INFO 1 + 1 = 2
 
 Functions and types
 ===================

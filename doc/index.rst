@@ -12,21 +12,23 @@ An example
 
 .. code-block:: python
 
-   from log import Logger
+   from log import get_logger
 
    def main():
-       logger = Logger("my-logger")
-       logger.info(f"1 + 1 = {1 + 1}")
+       logger = get_logger(__name__)
+       logger.warning(f"Is 1 + 1 = {1 + 2} really correct?")
+       logger.error(f"Something is wrong!")
 
 The output:
 
 .. code-block:: text
 
    $ mys run
-   my-logger INFO 1 + 1 = 2
+   basic.main WARNING Is 1 + 1 = 3 really correct?
+   basic.main ERROR Something is wrong!
 
-Functions and types
-===================
+API
+===
 
 .. mysfile:: src/lib.mys
 

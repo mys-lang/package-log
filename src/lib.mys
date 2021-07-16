@@ -6,6 +6,17 @@ class Level:
     Error = 40
     Off = 255
 
+@trait
+class Handler:
+
+    def log(self, message: string):
+        pass
+
+class StdoutHandler(Handler):
+
+    def log(self, message: string):
+        print(message)
+
 class Logger:
     """A logger.
 
@@ -13,10 +24,16 @@ class Logger:
 
     _name: string
     _level: Level
+    _handler: Handler
 
-    def __init__(self, name: string, level: Level = Level.Info):
+    def __init__(self,
+                 name: string,
+                 # ToDo: Should be Level.Info, but 'mys doc' fails
+                 level: Level = Level(20),
+                 handler: Handler = StdoutHandler()):
         self._name = name
         self._level = level
+        self._handler = handler
 
     def set_level(self, level: Level):
         """Set the logging level.
@@ -48,13 +65,31 @@ class Logger:
         if not self.is_enabled_for(level):
             return
 
-        print(f"{self._name} {level_string} {message}")
+        self._handler.log(f"{self._name} {level_string} {message}")
 
 @test
-def test_print():
+def test_default_handler():
     logger = Logger("my-logger")
 
     logger.error(f"Message: {1 + 1}")
     logger.warning(f"Message: {2 + 2}")
     logger.info(f"Message: {3 + 3}")
     logger.debug(f"Message: {4 + 4}")
+
+class _BufferHandler(Handler):
+    entries: [string]
+
+    def log(self, message: string):
+        self.entries.append(message)
+
+@test
+def test_buffer_handler():
+    handler = _BufferHandler([])
+    logger = Logger("my-logger", Level.Info, handler)
+
+    logger.info("Message 1")
+    logger.debug("Message 2")
+    logger.info("Message 3")
+
+    assert handler.entries == ["my-logger INFO Message 1",
+                               "my-logger INFO Message 3"]

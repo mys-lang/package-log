@@ -8,7 +8,7 @@ Logging facilities in the `Mys programming language`_.
 Project: https://github.com/mys-lang/package-log
 
 A basic example
----------------
+===============
 
 Create a logger and call it's warning and error methods to print
 messages to standard output.
@@ -31,7 +31,7 @@ The output:
    basic.main ERROR Something is wrong!
 
 Setting logging level example
------------------------------
+=============================
 
 Set a logger's level by just knowing the logger name.
 

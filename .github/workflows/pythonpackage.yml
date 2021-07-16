@@ -23,6 +23,7 @@ jobs:
       run: |
         mys test
         mys -C examples/basic run
+        mys -C examples/set_level run
 
   release:
     needs: [linux]

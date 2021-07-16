@@ -1,0 +1,23 @@
+from log import get_logger
+from log import LOGGERS
+from log import Level
+
+def set_log_level_to_debug(name: string):
+    logger = LOGGERS.get(name, None)
+
+    if logger is None:
+        print(f"Logger '{name}' does not exist.")
+    else:
+        print(f"Setting log level to debug for logger '{name}'.")
+        logger.level = Level.Debug
+
+def main():
+    logger = get_logger("foo")
+
+    logger.debug("First try.")
+
+    set_log_level_to_debug("bar")
+    logger.debug("Second try.")
+
+    set_log_level_to_debug("foo")
+    logger.debug("Third try.")

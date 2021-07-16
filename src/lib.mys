@@ -8,17 +8,25 @@ class Level:
 
 @trait
 class Handler:
+    """Log entry output handler.
+
+    """
 
     def log(self, message: string):
         pass
 
 class StdoutHandler(Handler):
+    """Writes log messages to standard output.
+
+    """
 
     def log(self, message: string):
         print(message)
 
 class Logger:
     """A logger.
+
+    Writes log messages to standard ouput by default.
 
     """
 
@@ -50,15 +58,31 @@ class Logger:
         return level >= self._level
 
     def error(self, message: string):
+        """Log given error message.
+
+        """
+
         self._log(message, Level.Error, "ERROR")
 
     def warning(self, message: string):
+        """Log given warning message.
+
+        """
+
         self._log(message, Level.Warning, "WARNING")
 
     def info(self, message: string):
+        """Log given info message.
+
+        """
+
         self._log(message, Level.Info, "INFO")
 
     def debug(self, message: string):
+        """Log given debug message.
+
+        """
+
         self._log(message, Level.Debug, "DEBUG")
 
     def _log(self, message: string, level: Level, level_string: string):

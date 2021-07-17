@@ -65,13 +65,19 @@ class Logger:
             HANDLER.write(FORMATTER.format(self._name, level, message))
 
 LOGGERS: {string: Logger} = {}
-# ToDo: Docstring.
+"""A dictionary of all known loggers.
+
+"""
 
 HANDLER: Handler = StdoutHandler()
-# ToDo: Docstring.
+"""The handler which all log messages are written to.
+
+"""
 
 FORMATTER: Formatter = DefaultFormatter()
-# ToDo: Docstring.
+"""The formatter that formats all messages.
+
+"""
 
 @enum(u8)
 class Level:

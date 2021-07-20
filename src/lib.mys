@@ -16,12 +16,19 @@ def get_logger(name: string) -> Logger:
 class Logger:
     """A logger.
 
+    This class is normally not instantiated directly by the
+    user. Instead, use `get_logger()` to create instances.
+
     """
 
     _name: string
     level: Level
 
     def __init__(self, name: string, level: Level = Level.Warning):
+        """Initialize the logger object with given name and level.
+
+        """
+
         self._name = name
         self.level = level
 
@@ -79,7 +86,7 @@ FORMATTER: Formatter = DefaultFormatter()
 
 """
 
-@enum(u8)
+@enum
 class Level:
     """Logging levels.
 
@@ -143,7 +150,7 @@ class DefaultFormatter(Formatter):
 
         """
 
-        return f"{logger_name} {_LEVEL_STRINGS[u8(level)]} {message}"
+        return f"{logger_name} {_LEVEL_STRINGS[i64(level)]} {message}"
 
 @test
 def test_default_handler():

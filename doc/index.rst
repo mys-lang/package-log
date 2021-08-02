@@ -39,7 +39,7 @@ Setting logging level example
 
 Set a logger's level by just knowing the logger name.
 
-.. code-block:: python
+.. code-block:: mys
 
    from log import get_logger
    from log import LOGGERS

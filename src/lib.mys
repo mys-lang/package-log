@@ -39,35 +39,35 @@ class Logger:
 
         return level >= self.level
 
-    def error(self, message: string):
+    def error(self, message: lazy[string]):
         """Log given error message.
 
         """
 
         self._log(message, Level.Error)
 
-    def warning(self, message: string):
+    def warning(self, message: lazy[string]):
         """Log given warning message.
 
         """
 
         self._log(message, Level.Warning)
 
-    def info(self, message: string):
+    def info(self, message: lazy[string]):
         """Log given info message.
 
         """
 
         self._log(message, Level.Info)
 
-    def debug(self, message: string):
+    def debug(self, message: lazy[string]):
         """Log given debug message.
 
         """
 
         self._log(message, Level.Debug)
 
-    def _log(self, message: string, level: Level):
+    def _log(self, message: lazy[string], level: Level):
         if self.is_enabled_for(level):
             HANDLER.write(FORMATTER.format(self._name, level, message))
 

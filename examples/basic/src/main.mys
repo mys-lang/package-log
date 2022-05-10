@@ -1,6 +1,6 @@
 from log import get_logger
 
-def main():
+func main():
     logger = get_logger(__name__)
     logger.warning(f"Is 1 + 1 = {1 + 2} really correct?")
     logger.error("Something is wrong!")

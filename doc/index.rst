@@ -19,7 +19,7 @@ messages to standard output.
 
    from log import get_logger
 
-   def main():
+   func main():
        logger = get_logger(__name__)
        logger.warning(f"Is 1 + 1 = {1 + 2} really correct?")
        logger.error(f"Something is wrong!")
@@ -45,7 +45,7 @@ Set a logger's level by just knowing the logger name.
    from log import LOGGERS
    from log import Level
 
-   def set_log_level_to_debug(name: string):
+   func set_log_level_to_debug(name: string):
        logger = LOGGERS.get(name, None)
 
        if logger is None:
@@ -53,7 +53,7 @@ Set a logger's level by just knowing the logger name.
        else:
            logger.level = Level.Debug
 
-   def main():
+   func main():
        logger = get_logger("foo")
 
        logger.debug("First try.")

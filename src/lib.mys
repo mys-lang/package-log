@@ -1,4 +1,4 @@
-def get_logger(name: string) -> Logger:
+func get_logger(name: string) -> Logger:
     """Get the logger with given name. Creates a new logger if it does not
     already exist. The global variable LOGGERS contains all loggers
     created by this function.
@@ -24,7 +24,7 @@ class Logger:
     _name: string
     level: Level
 
-    def __init__(self, name: string, level: Level = Level.Warning):
+    func __init__(self, name: string, level: Level = Level.Warning):
         """Initialize the logger object with given name and level.
 
         """
@@ -32,42 +32,42 @@ class Logger:
         self._name = name
         self.level = level
 
-    def is_enabled_for(self, level: Level) -> bool:
+    func is_enabled_for(self, level: Level) -> bool:
         """Returns True is given level is enabled, otherwise False.
 
         """
 
         return level >= self.level
 
-    def error(self, message: lazy[string]):
+    func error(self, message: lazy[string]):
         """Log given error message.
 
         """
 
         self._log(message, Level.Error)
 
-    def warning(self, message: lazy[string]):
+    func warning(self, message: lazy[string]):
         """Log given warning message.
 
         """
 
         self._log(message, Level.Warning)
 
-    def info(self, message: lazy[string]):
+    func info(self, message: lazy[string]):
         """Log given info message.
 
         """
 
         self._log(message, Level.Info)
 
-    def debug(self, message: lazy[string]):
+    func debug(self, message: lazy[string]):
         """Log given debug message.
 
         """
 
         self._log(message, Level.Debug)
 
-    def _log(self, message: lazy[string], level: Level):
+    func _log(self, message: lazy[string], level: Level):
         if self.is_enabled_for(level):
             HANDLER.write(FORMATTER.format(self._name, level, message))
 
@@ -111,7 +111,7 @@ class Handler:
 
     """
 
-    def write(self, message: string):
+    func write(self, message: string):
         """Write given message to desired location.
 
         """
@@ -121,7 +121,7 @@ class StdoutHandler(Handler):
 
     """
 
-    def write(self, message: string):
+    func write(self, message: string):
         """Writes given log message to standard output.
 
         """
@@ -134,7 +134,7 @@ class Formatter:
 
     """
 
-    def format(self, logger_name: string, level: Level, message: string) -> string:
+    func format(self, logger_name: string, level: Level, message: string) -> string:
         """Returns a formatted log message.
 
         """
@@ -144,7 +144,7 @@ class DefaultFormatter(Formatter):
 
     """
 
-    def format(self, logger_name: string, level: Level, message: string) -> string:
+    func format(self, logger_name: string, level: Level, message: string) -> string:
         """Formats a log message on the format <logger name> <level> <message>
         and returns it.
 
@@ -153,7 +153,7 @@ class DefaultFormatter(Formatter):
         return f"{logger_name} {_LEVEL_STRINGS[i64(level)]} {message}"
 
 @test
-def test_default_handler():
+func test_default_handler():
     logger = Logger("my-logger")
 
     logger.error(f"Message: {1 + 1}")
@@ -164,10 +164,10 @@ def test_default_handler():
 class _BufferHandler(Handler):
     entries: [string]
 
-    def write(self, message: string):
+    func write(self, message: string):
         self.entries.append(message)
 
-def _setup_buffer_handler() -> (_BufferHandler, Handler):
+func _setup_buffer_handler() -> (_BufferHandler, Handler):
     default_handler = HANDLER
     handler = _BufferHandler([])
     HANDLER = handler
@@ -175,7 +175,7 @@ def _setup_buffer_handler() -> (_BufferHandler, Handler):
     return handler, default_handler
 
 @test
-def test_buffer_handler():
+func test_buffer_handler():
     handler, default_handler = _setup_buffer_handler()
     logger = Logger("my-logger", Level.Info)
 
@@ -191,12 +191,12 @@ def test_buffer_handler():
 class _CounterFormatter(Formatter):
     count: i64
 
-    def format(self, logger_name: string, level: Level, message: string) -> string:
+    func format(self, logger_name: string, level: Level, message: string) -> string:
         self.count += 1
 
         return f"{self.count}: {message}"
 
-def _setup_counter_formatter() -> (_CounterFormatter, Formatter):
+func _setup_counter_formatter() -> (_CounterFormatter, Formatter):
     default_formatter = FORMATTER
     formatter = _CounterFormatter(0)
     FORMATTER = formatter
@@ -204,7 +204,7 @@ def _setup_counter_formatter() -> (_CounterFormatter, Formatter):
     return formatter, default_formatter
 
 @test
-def test_my_formatter():
+func test_my_formatter():
     handler, default_handler = _setup_buffer_handler()
     formatter, default_formatter = _setup_counter_formatter()
     logger = Logger("my-logger")
@@ -219,7 +219,7 @@ def test_my_formatter():
     FORMATTER = default_formatter
 
 @test
-def test_levels():
+func test_levels():
     handler, default_handler = _setup_buffer_handler()
     logger = Logger("my-logger")
 
@@ -296,7 +296,7 @@ def test_levels():
     HANDLER = default_handler
 
 @test
-def test_get_logger():
+func test_get_logger():
     LOGGERS = {}
 
     foo = get_logger("foo")

@@ -105,8 +105,7 @@ _LEVEL_STRINGS: [string] = [
     "ERROR"
 ]
 
-@trait
-class Handler:
+trait Handler:
     """Log entry output handler trait.
 
     """
@@ -128,8 +127,7 @@ class StdoutHandler(Handler):
 
         print(message)
 
-@trait
-class Formatter:
+trait Formatter:
     """Log entry formatter trait.
 
     """

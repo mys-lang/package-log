@@ -39,35 +39,35 @@ class Logger:
 
         return level >= self.level
 
-    func error(self, message: lazy[string]):
+    func error(self, message: string):
         """Log given error message.
 
         """
 
         self._log(message, Level.Error)
 
-    func warning(self, message: lazy[string]):
+    func warning(self, message: string):
         """Log given warning message.
 
         """
 
         self._log(message, Level.Warning)
 
-    func info(self, message: lazy[string]):
+    func info(self, message: string):
         """Log given info message.
 
         """
 
         self._log(message, Level.Info)
 
-    func debug(self, message: lazy[string]):
+    func debug(self, message: string):
         """Log given debug message.
 
         """
 
         self._log(message, Level.Debug)
 
-    func _log(self, message: lazy[string], level: Level):
+    func _log(self, message: string, level: Level):
         if self.is_enabled_for(level):
             HANDLER.write(FORMATTER.format(self._name, level, message))
 

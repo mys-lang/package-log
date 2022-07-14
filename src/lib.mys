@@ -150,8 +150,7 @@ class DefaultFormatter(Formatter):
 
         return f"{logger_name} {_LEVEL_STRINGS[i64(level)]} {message}"
 
-@test
-func test_default_handler():
+test default_handler():
     logger = Logger("my-logger")
 
     logger.error(f"Message: {1 + 1}")
@@ -172,8 +171,7 @@ func _setup_buffer_handler() -> (_BufferHandler, Handler):
 
     return handler, default_handler
 
-@test
-func test_buffer_handler():
+test buffer_handler():
     handler, default_handler = _setup_buffer_handler()
     logger = Logger("my-logger", Level.Info)
 
@@ -201,8 +199,7 @@ func _setup_counter_formatter() -> (_CounterFormatter, Formatter):
 
     return formatter, default_formatter
 
-@test
-func test_my_formatter():
+test my_formatter():
     handler, default_handler = _setup_buffer_handler()
     formatter, default_formatter = _setup_counter_formatter()
     logger = Logger("my-logger")
@@ -216,8 +213,7 @@ func test_my_formatter():
     HANDLER = default_handler
     FORMATTER = default_formatter
 
-@test
-func test_levels():
+test levels():
     handler, default_handler = _setup_buffer_handler()
     logger = Logger("my-logger")
 
@@ -293,8 +289,7 @@ func test_levels():
 
     HANDLER = default_handler
 
-@test
-func test_get_logger():
+test get_logger():
     LOGGERS = {}
 
     foo = get_logger("foo")

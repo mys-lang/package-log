@@ -86,8 +86,7 @@ FORMATTER: Formatter = DefaultFormatter()
 
 """
 
-@enum
-class Level:
+enum Level:
     """Logging levels.
 
     """

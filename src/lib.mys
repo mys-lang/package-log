@@ -39,35 +39,35 @@ class Logger:
 
         return level >= self.level
 
-    func error(self, message: string):
+    macro ERROR(self, message: string):
         """Log given error message.
 
         """
 
-        self._log(message, Level.Error)
+        self._LOG(message, Level.Error)
 
-    func warning(self, message: string):
+    macro WARNING(self, message: string):
         """Log given warning message.
 
         """
 
-        self._log(message, Level.Warning)
+        self._LOG(message, Level.Warning)
 
-    func info(self, message: string):
+    macro INFO(self, message: string):
         """Log given info message.
 
         """
 
-        self._log(message, Level.Info)
+        self._LOG(message, Level.Info)
 
-    func debug(self, message: string):
+    macro DEBUG(self, message: string):
         """Log given debug message.
 
         """
 
-        self._log(message, Level.Debug)
+        self._LOG(message, Level.Debug)
 
-    func _log(self, message: string, level: Level):
+    macro _LOG(self, message: string, level: Level):
         if self.is_enabled_for(level):
             HANDLER.write(FORMATTER.format(self._name, level, message))
 
@@ -152,10 +152,10 @@ class DefaultFormatter(Formatter):
 test default_handler():
     logger = Logger("my-logger")
 
-    logger.error(f"Message: {1 + 1}")
-    logger.warning(f"Message: {2 + 2}")
-    logger.info(f"Message: {3 + 3}")
-    logger.debug(f"Message: {4 + 4}")
+    logger.ERROR(f"Message: {1 + 1}")
+    logger.WARNING(f"Message: {2 + 2}")
+    logger.INFO(f"Message: {3 + 3}")
+    logger.DEBUG(f"Message: {4 + 4}")
 
 class _BufferHandler(Handler):
     entries: [string]
@@ -174,9 +174,9 @@ test buffer_handler():
     handler, default_handler = _setup_buffer_handler()
     logger = Logger("my-logger", Level.Info)
 
-    logger.info("Message 1")
-    logger.debug("Message 2")
-    logger.info("Message 3")
+    logger.INFO("Message 1")
+    logger.DEBUG("Message 2")
+    logger.INFO("Message 3")
 
     assert handler.entries == ["my-logger INFO Message 1",
                                "my-logger INFO Message 3"]
@@ -203,8 +203,8 @@ test my_formatter():
     formatter, default_formatter = _setup_counter_formatter()
     logger = Logger("my-logger")
 
-    logger.warning("Message a")
-    logger.error("Message b")
+    logger.WARNING("Message a")
+    logger.ERROR("Message b")
 
     assert handler.entries == ["1: Message a",
                                "2: Message b"]
@@ -220,10 +220,10 @@ test levels():
     logger.level = Level.Debug
     handler.entries = []
 
-    logger.debug("1")
-    logger.info("2")
-    logger.warning("3")
-    logger.error("4")
+    logger.DEBUG("1")
+    logger.INFO("2")
+    logger.WARNING("3")
+    logger.ERROR("4")
 
     assert handler.entries == ["my-logger DEBUG 1",
                                "my-logger INFO 2",
@@ -239,10 +239,10 @@ test levels():
     logger.level = Level.Info
     handler.entries = []
 
-    logger.debug("5")
-    logger.info("6")
-    logger.warning("7")
-    logger.error("8")
+    logger.DEBUG("5")
+    logger.INFO("6")
+    logger.WARNING("7")
+    logger.ERROR("8")
 
     assert handler.entries == ["my-logger INFO 6",
                                "my-logger WARNING 7",
@@ -257,10 +257,10 @@ test levels():
     logger.level = Level.Warning
     handler.entries = []
 
-    logger.debug("9")
-    logger.info("10")
-    logger.warning("11")
-    logger.error("12")
+    logger.DEBUG("9")
+    logger.INFO("10")
+    logger.WARNING("11")
+    logger.ERROR("12")
 
     assert handler.entries == ["my-logger WARNING 11",
                                "my-logger ERROR 12"]
@@ -274,10 +274,10 @@ test levels():
     logger.level = Level.Error
     handler.entries = []
 
-    logger.debug("13")
-    logger.info("14")
-    logger.warning("15")
-    logger.error("16")
+    logger.DEBUG("13")
+    logger.INFO("14")
+    logger.WARNING("15")
+    logger.ERROR("16")
 
     assert handler.entries == ["my-logger ERROR 16"]
 

@@ -14,10 +14,10 @@ func set_log_level_to_debug(name: string):
 func main():
     logger = get_logger("foo")
 
-    logger.debug("First try.")
+    logger.DEBUG("First try.")
 
     set_log_level_to_debug("bar")
-    logger.debug("Second try.")
+    logger.DEBUG("Second try.")
 
     set_log_level_to_debug("foo")
-    logger.debug("Third try.")
+    logger.DEBUG("Third try.")

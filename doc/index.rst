@@ -21,8 +21,8 @@ messages to standard output.
 
    func main():
        logger = get_logger(__name__)
-       logger.warning(f"Is 1 + 1 = {1 + 2} really correct?")
-       logger.error(f"Something is wrong!")
+       logger.WARNING(f"Is 1 + 1 = {1 + 2} really correct?")
+       logger.ERROR(f"Something is wrong!")
 
 The output:
 
@@ -56,13 +56,13 @@ Set a logger's level by just knowing the logger name.
    func main():
        logger = get_logger("foo")
 
-       logger.debug("First try.")
+       logger.DEBUG("First try.")
 
        set_log_level_to_debug("bar")
-       logger.debug("Second try.")
+       logger.DEBUG("Second try.")
 
        set_log_level_to_debug("foo")
-       logger.debug("Third try.")
+       logger.DEBUG("Third try.")
 
 The output:
 

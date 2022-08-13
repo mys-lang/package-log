@@ -97,7 +97,7 @@ enum Level:
     Error = 3
 
 # Use Enum values later?
-_LEVEL_STRINGS = [
+_LEVEL_STRINGS: [string] = [
     "DEBUG",
     "INFO",
     "WARNING",
